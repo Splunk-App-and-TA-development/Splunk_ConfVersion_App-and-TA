@@ -5,6 +5,14 @@ Add-on to monitor and parse Splunk configuration files.
 ## Project Status : RC1
 
 ## Installation and configuration
+Underhalf the Git repo you'll find two main folders that you need to upload to '/opt/splunk/etc/apps/'.
+After the installation of booth folders in '/opt/splunk/etc/apps/' restart the Splunk daemon to make it run.
+
+- **STXT-App_Confversion**
+App with the views of the Configuration Changes on your Splunk Servers.
+
+- **TA-SRG_Confversion**
+TA with the extractions and parsings of the Configuration Changes on your Splunk Servers.
 
 ### Splunk Components
 
