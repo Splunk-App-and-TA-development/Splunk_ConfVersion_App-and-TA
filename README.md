@@ -5,22 +5,28 @@ Add-on to monitor and parse Splunk configuration files.
 ## Project Status : RC1
 
 ## Installation and configuration
-Underhalf the Git repo you'll find two main folders that you need to upload to '/opt/splunk/etc/apps/'.
-After the installation of booth folders in '/opt/splunk/etc/apps/' restart the Splunk daemon to make it run.
+Underhalf the Git repo you'll find two main folders that you need to upload to `/opt/splunk/etc/apps/`.
+After the installation of booth folders in `/opt/splunk/etc/apps/` restart the Splunk daemon to make it run.
 
-- **STXT-App_Confversion**
-App with the views of the Configuration Changes on your Splunk Servers.
+1. Create an new index in your environment: `index = splunk_confchange`
 
-- **TA-SRG_Confversion**
-TA with the extractions and parsings of the Configuration Changes on your Splunk Servers.
+2. Upload the App **STXT-App_Confversion** to `/opt/splunk/etc/apps/`.
+_App with the views of the Configuration Changes on your Splunk Servers._
+
+3. Upload the TA  **TA-SRG_Confversion** `/opt/splunk/etc/apps/`.
+_TA with the extractions and parsings of the Configuration Changes on your Splunk Servers._
+
+4. Restart your Splunk Server: `/opt/splunk/bin/splunk restart`
 
 ### Splunk Components
 
-This TA can be installed on all Splunk components including Universal Forwarders. This TA should be installed and configured on all components where configuration change tracking is desired.
+The **TA-SRG_Confversion** can be installed on all Splunk components including Universal Forwarders. This TA should be installed and configured on all components where configuration change tracking is desired.
 
-This TA must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
+The **TA-SRG_Confversion** must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
 
-This TA must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
+The **TA-SRG_Confversion** must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
+
+The **STXT-App_Confversion** should be installed on your DMC Console of the Splunk Search Head where the DMC Console is installed to see all Changes on all your servers.
 
 ### Configuration
 
