@@ -1,0 +1,129 @@
+<form>
+  <label>Configuration Viewer</label>
+  <init>
+    <condition match="'display_stanza' != *">
+      <set token="display_stanza">Please select a file to view.</set>
+    </condition>
+  </init>
+  <search id="final_prefilter">
+    <query>
+      (`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" conf_app="$conf_app_filter$" conf_context="$conf_context_filter$" earliest=1) `include_deletions("$host_filter$", "$conf_app_filter$", "$conf_context_filter$", "*")`
+| `latest`
+| eval time=_time
+| reverse
+| stats list(_raw) as stanzas by time, conf_file, source
+| rex field=stanzas mode=sed "s/([\r\n]+)?$/\n\n/"
+| eval stanzas=mvjoin(stanzas,""), file_size=len(stanzas)
+| search file_size&gt;0
+| rename stanzas as _raw, time as _time
+| table _time, _raw, conf_file, source
+| sort _time
+| dedup consecutive=t _raw
+| streamstats count
+| table count, _time, _raw, conf_file, source
+| eval count2=count
+| eval prev_row=count-1
+    </query>
+  </search>
+  <fieldset submitButton="false">
+    <input type="radio" token="splunk_default_filter">
+      <label>Splunk Default .conf</label>
+      <choice value="source!=*/etc/system/default* source!=*/etc/apps/search/default* source!=*/etc/apps/splunk_instrumentation/default* source!=*/etc/apps/splunk_monitoring_console/default* source!=*/etc/apps/SplunkLightForwarder/default*">Yes</choice>
+      <choice value="">No</choice>
+      <default></default>
+    </input>
+    <input type="dropdown" token="scope_filter">
+      <label>Scope</label>
+      <choice value="etc OR conf_scope=apps OR conf-scope=slave-apps)">Applied Configuration</choice>
+      <default>etc OR conf_scope=apps OR conf-scope=slave-apps)</default>
+      <prefix>(conf_scope=</prefix>
+      <suffix>)</suffix>
+      <initialValue>etc OR conf_scope=apps OR conf-scope=slave-apps)</initialValue>
+    </input>
+    <input type="dropdown" token="host_filter">
+      <label>Host</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats count where `conf_files_index` sourcetype="splunk_conf_file" $splunk_default_filter$ by host</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <!--<change>-->
+      <!--  <unset token="form.conf_app_filter"></unset>-->
+      <!--</change>-->
+    </input>
+    <input type="dropdown" token="conf_app_filter">
+      <label>App</label>
+      <search>
+        <query>`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" $splunk_default_filter$
+| dedup conf_app
+| table conf_app
+| sort conf_app</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <fieldForLabel>conf_app</fieldForLabel>
+      <fieldForValue>conf_app</fieldForValue>
+      <!--<change>-->
+      <!--  <unset token="form.conf_context_filter"></unset>-->
+      <!--</change>-->
+    </input>
+    <input type="dropdown" token="conf_context_filter" searchWhenChanged="true">
+      <label>Context</label>
+      <choice value="local">local</choice>
+      <choice value="default">default</choice>
+      <search>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>local</default>
+      <initialValue>local</initialValue>
+    </input>
+    <input type="checkbox" token="reset_placeholder">
+      <label>Reset Fields</label>
+      <choice value="do_reset">Tick to Reset</choice>
+      <change>
+        <condition value="do_reset">
+          <unset token="form.conf_stanza_filter"></unset>
+          <unset token="form.conf_file_filter"></unset>
+          <unset token="form.conf_context_filter"></unset>
+          <unset token="form.conf_app_filter"></unset>
+          <unset token="form.host_filter"></unset>
+          <unset token="form.reset_placeholder"></unset>
+        </condition>
+      </change>
+      <delimiter> </delimiter>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>File</title>
+      <input type="text" token="tok_filename_user_filter" searchWhenChanged="true">
+        <label>Filter</label>
+        <default>*</default>
+      </input>
+      <table>
+        <search base="final_prefilter">
+          <query>| search conf_file="*$tok_filename_user_filter$*"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <fields>["conf_file"]</fields>
+        <drilldown>
+          <set token="display_stanza">$row._raw$</set>
+          <set token="conf_file">$row.conf_file$</set>
+          <set token="source">$row.source$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>File Preview</title>
+      <html>
+        <h4>$source$</h4>
+        <h4>$conf_file$</h4>
+        <pre>$display_stanza$</pre>
+      </html>
+    </panel>
+  </row>
+</form>

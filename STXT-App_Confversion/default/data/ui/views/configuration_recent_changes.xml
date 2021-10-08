@@ -1,0 +1,55 @@
+<form>
+  <label>Recent Configuration Changes</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="tok_host_filter" searchWhenChanged="true">
+      <label>Host</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats count where index=_audit by host</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <prefix>*</prefix>
+      <suffix>*</suffix>
+    </input>
+    <input type="radio" token="tok_filter_nodef" searchWhenChanged="true">
+      <label>Splunk Internal Files</label>
+      <choice value="| search NOT (conf_app=system conf_context=default) NOT conf_app=user-prefs NOT conf_file=telemetry.conf NOT conf_file=ui-prefs.conf">Hide</choice>
+      <choice value="| eval noop=1">Show</choice>
+      <default>| search NOT (conf_app=system conf_context=default) NOT conf_app=user-prefs NOT conf_file=telemetry.conf NOT conf_file=ui-prefs.conf NOT conf_file=ui-tour.conf</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>host="$tok_host_filter$" index=_audit action=add OR action=update OR action=delete path=*.conf path IN(*/etc/apps/*, */etc/system/*, */etc/deployment-apps/*, */etc/master-apps/*, */etc/slave-apps/*, */shcluster/*)
+| rex field=path "\/+(?&lt;conf_scope&gt;[^\/]+)\/+(?&lt;conf_app&gt;[^\/]+)\/+(?&lt;conf_context&gt;[^\/]+)\/+(?&lt;conf_file&gt;[^\/]+)$$"
+$tok_filter_nodef$
+| eval _time=coalesce(strptime(modtime, "%a %b %d %H:%M:%S %Y"), _time)
+| table _time action conf_scope conf_app conf_context conf_file path
+| sort - _time</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="action">
+          <colorPalette type="map">{"update":#F8BE34,"add":#53A051,"delete":#DC4E41}</colorPalette>
+        </format>
+        <fields>["_time","action","conf_scope","conf_app","conf_context","conf_file"]</fields>
+        <drilldown>
+          <link target="_blank">/app/ta-confversion/configuration_history?form.host_filter=$tok_host_filter$&amp;form.conf_app_filter=$row.conf_app$&amp;form.conf_context_filter=$row.conf_context$&amp;form.conf_file_filter=$row.conf_file$&amp;form.conf_stanza_filter=*&amp;form.scope_filter=$row.conf_scope$</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>

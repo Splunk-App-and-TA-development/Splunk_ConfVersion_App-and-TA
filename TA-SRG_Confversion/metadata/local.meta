@@ -1,0 +1,18 @@
+# splunk TA - TA-SRG_Confversion
+# metadata/local.meta
+# (c) 2021 SwissTXT Security
+###################################################
+# ----------------------------------------------- #
+# Configuration Monitoring TA for Splunk.         #
+# ----------------------------------------------- #
+# Splunk Add-on to monitor and parse Splunk       #
+# configuration files. It allows administrators   #
+# to quickly identify changes in Splunk's         #
+# configuration.                                  #
+# ----------------------------------------------- #
+#     >> Local Permissions declarations <<        #
+###################################################
+
+[app/install/install_source_checksum]
+version = 7.3.6
+modtime = 1611050223.821072000

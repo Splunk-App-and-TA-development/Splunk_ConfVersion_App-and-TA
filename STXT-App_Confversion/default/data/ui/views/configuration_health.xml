@@ -1,0 +1,46 @@
+<dashboard>
+  <label>Configuration Health</label>
+  <description>Identifies common issues relating to stanza and conf syntax</description>
+  <row>
+    <panel>
+      <title>Implicit Default Stanzas</title>
+      <event>
+        <title>This type of stanza can be declared without a standard [stanza] header at the beginning of a .conf file. While syntatecally legal, these stanzas can often be caused by mistypes.</title>
+        <search>
+          <query>(`conf_files_index` sourcetype="splunk_conf_file"
+NOT (conf_app=system conf_context=default)) `include_deletions("*", "*", "*", "*")`
+| `latest`
+| search NOT conf_stanza=* OR conf_stanza="null"</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="list.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </event>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Suspicious Stanzas</title>
+      <event>
+        <title>Stanzas which contain entries without an equals sign. This is syntatecally incorrect and often indicative of larger issues</title>
+        <search>
+          <query>(`conf_files_index` sourcetype="splunk_conf_file" NOT (conf_file=macros.conf AND conf_app=*conf*TA) NOT (conf_app=system conf_context=default)) `include_deletions("*", "*", "*", "*")`
+| `latest`
+| `normalize_multiline_values`
+| `confdata2mv`
+| eval suspicious=mvfilter(match(conf_data, "^[^\=]+$"))
+| eval suspicious=mvfilter(!match(suspicious, "^\s*$"))
+| eval suspicious=mvfilter(!match(suspicious, "^\s*\|.*$"))
+| eval suspicious=mvfilter(!match(suspicious, "^\s*\#.*$"))
+| eval suspiciousc=mvcount(suspicious)
+| search suspiciousc&gt;0</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="list.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </event>
+    </panel>
+  </row>
+</dashboard>

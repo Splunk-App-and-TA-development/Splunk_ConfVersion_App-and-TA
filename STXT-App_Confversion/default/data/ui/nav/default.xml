@@ -1,0 +1,9 @@
+<nav search_view="search" color="#6badff">
+  <!--<collection label="Configuration">-->
+    <view name="configuration_recent_changes" default='true' />
+    <view name="configuration_view" />
+    <view name="configuration_history" />
+    <view name="configuration_health" />
+  <!--</collection>-->
+  <view name="search" />
+</nav>

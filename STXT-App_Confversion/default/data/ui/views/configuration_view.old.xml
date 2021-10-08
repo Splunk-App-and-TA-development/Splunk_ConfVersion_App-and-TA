@@ -1,0 +1,111 @@
+<dashboard>
+  <label>Configuration Viewer</label>
+  <init>
+    <condition match="'display_stanza' != *">
+      <set token="display_stanza">Please select a file to view.</set>
+    </condition>
+  </init>
+  <row>
+    <panel>
+      <title>Host</title>
+      <table>
+        <title>$host_filter$</title>
+        <search>
+          <query>| tstats count where `conf_files_index` sourcetype="splunk_conf_file" by host
+| fields host | sort host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">row</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <set token="host_filter">$click.value$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>App</title>
+      <table>
+        <title>$conf_app_filter$</title>
+        <search>
+          <query>`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$"
+| `latest`
+| dedup conf_app
+| table conf_app
+| sort conf_app</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <drilldown>
+          <set token="conf_app_filter">$click.value$</set>
+        </drilldown>
+        <option name="drilldown">row</option>
+        <format type="color" field="WebShop">
+          <colorPalette type="expression">if(match(conf_app,"system"),"#65A637",if(match(value,"system"),"#FFFF00","#FF0000"))</colorPalette>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Context</title>
+      <table>
+        <title>$conf_context_filter$</title>
+        <search>
+          <query>| makeresults count=2
+| streamstats count
+| eval context=case(count==1, "default", count==2, "local")
+| table context</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <set token="conf_context_filter">$row.context$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>File</title>
+      <table>
+        <title>$conf_file$</title>
+        <search>
+          <query>(`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" conf_app="$conf_app_filter$" conf_context="$conf_context_filter$") `include_deletions("$host_filter$", "$conf_app_filter$", "$conf_context_filter$", "*")`
+| `latest`
+| eval time=_time
+| reverse
+| stats list(_raw) as stanzas by time, conf_file
+| rex field=stanzas mode=sed "s/$/\n\n/"
+| eval stanzas=mvjoin(stanzas,""), file_size=len(stanzas)
+| search file_size&gt;0
+| rename stanzas as _raw, time as _time
+| table _time, _raw, conf_file
+| sort _time
+| dedup consecutive=t _raw
+| streamstats count
+| table count, _time, _raw, conf_file
+| eval count2=count
+| eval prev_row=count-1</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">progressbar</option>
+        <fields>["conf_file"]</fields>
+        <drilldown>
+          <set token="display_stanza">$row._raw$</set>
+          <set token="conf_file">$row.conf_file$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Stanza Preview</title>
+      <html>
+        <pre>$display_stanza$</pre>
+      </html>
+    </panel>
+  </row>
+</dashboard>

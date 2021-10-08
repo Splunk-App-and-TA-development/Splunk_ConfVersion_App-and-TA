@@ -1,0 +1,185 @@
+<form>
+  <label>Configuration Version History</label>
+  <init>
+    <set token="display_stanza">Please select a version to preview from the panel to the left.</set>
+    <unset token="form.reset_placeholder"></unset>
+    <unset token="reset_placeholder"></unset>
+  </init>
+  <search base="chg_history">
+    <query>| diff position1=$display_row_prev$ position2=$display_row$ diffheader=false</query>
+    <error>
+      <!--<set token="display_diff">$job.messages$</set>-->
+      <set token="display_diff">Error getting diff...</set>
+    </error>
+    <progress>
+      <set token="display_diff">Working...</set>
+    </progress>
+    <done>
+      <set token="display_diff">$result._raw$</set>
+      <!--<set token="display_diff">$job.resultCount$</set>-->
+    </done>
+  </search>
+  <fieldset submitButton="false">
+    <input type="radio" token="splunk_default_filter">
+      <label>Splunk Default .conf</label>
+      <choice value="source!=*/etc/system/default* source!=*/etc/apps/search/default* source!=*/etc/apps/splunk_instrumentation/default* source!=*/etc/apps/splunk_monitoring_console/default* source!=*/etc/apps/SplunkLightForwarder/default*">Yes</choice>
+      <choice value="">No</choice>
+      <default></default>
+    </input>
+    <input type="dropdown" token="scope_filter">
+      <label>Scope</label>
+      <choice value="etc OR conf_scope=apps OR conf-scope=slave-apps)">Applied Configuration</choice>
+      <default>etc OR conf_scope=apps OR conf-scope=slave-apps)</default>
+      <prefix>(conf_scope=</prefix>
+      <suffix>)</suffix>
+      <initialValue>etc OR conf_scope=apps OR conf-scope=slave-apps)</initialValue>
+      <fieldForLabel>conf_scope</fieldForLabel>
+      <fieldForValue>conf_scope</fieldForValue>
+      <search>
+        <query>`conf_files_index` sourcetype="splunk_conf_file" | stats count by conf_scope</query>
+      </search>
+    </input>
+    <input type="dropdown" token="host_filter">
+      <label>Host</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats count where `conf_files_index` sourcetype="splunk_conf_file" $splunk_default_filter$ by host</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <!--<change>-->
+      <!--  <unset token="form.conf_app_filter"></unset>-->
+      <!--</change>-->
+    </input>
+    <input type="dropdown" token="conf_app_filter">
+      <label>App</label>
+      <search>
+        <query>`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" $splunk_default_filter$
+| dedup conf_app
+| table conf_app
+| sort conf_app</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <fieldForLabel>conf_app</fieldForLabel>
+      <fieldForValue>conf_app</fieldForValue>
+      <!--<change>-->
+      <!--  <unset token="form.conf_context_filter"></unset>-->
+      <!--</change>-->
+    </input>
+    <input type="dropdown" token="conf_context_filter" searchWhenChanged="false">
+      <label>Context</label>
+      <choice value="local">local</choice>
+      <choice value="default">default</choice>
+      <search>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <!--<change>-->
+      <!--  <unset token="form.conf_file_filter"></unset>-->
+      <!--</change>-->
+      <default>local</default>
+      <initialValue>local</initialValue>
+    </input>
+    <input type="dropdown" token="conf_file_filter">
+      <label>Conf File</label>
+      <fieldForLabel>conf_file</fieldForLabel>
+      <fieldForValue>conf_file</fieldForValue>
+      <search>
+        <query>`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" $splunk_default_filter$
+| search conf_app="$conf_app_filter$" conf_context="$conf_context_filter$"
+| dedup conf_file
+| table conf_file 
+| sort conf_file</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <!--<change>-->
+      <!--  <unset token="form.conf_stanza_filter"></unset>-->
+      <!--</change>-->
+    </input>
+    <input type="dropdown" token="conf_stanza_filter">
+      <label>Stanza</label>
+      <fieldForLabel>conf_stanza</fieldForLabel>
+      <fieldForValue>conf_stanza</fieldForValue>
+      <search>
+        <query>`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" conf_file="$conf_file_filter$" $splunk_default_filter$
+| search conf_app="$conf_app_filter$" conf_context="$conf_context_filter$" 
+| dedup conf_stanza
+| table conf_stanza
+| sort conf_stanza</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <change>
+        <set token="display_stanza">Please select a version to preview from the panel to the left.</set>
+      </change>
+      <choice value="*">*</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="checkbox" token="reset_placeholder">
+      <label>Reset Fields</label>
+      <choice value="do_reset">Tick to Reset</choice>
+      <change>
+        <condition value="do_reset">
+          <unset token="form.conf_stanza_filter"></unset>
+          <unset token="form.conf_file_filter"></unset>
+          <unset token="form.conf_context_filter"></unset>
+          <unset token="form.conf_app_filter"></unset>
+          <unset token="form.host_filter"></unset>
+          <unset token="form.reset_placeholder"></unset>
+        </condition>
+      </change>
+      <delimiter> </delimiter>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Change History</title>
+      <table>
+        <title>Select a version to preview the stanza at that time</title>
+        <search id="chg_history">
+          <query>(`conf_files_index` sourcetype="splunk_conf_file" host="$host_filter$" conf_file="$conf_file_filter$" conf_stanza="$conf_stanza_filter$" conf_app="$conf_app_filter$" conf_context="$conf_context_filter$" $splunk_default_filter$) `include_deletions("$host_filter$", $conf_app_filter$, $conf_context_filter$, $conf_file_filter$)`
+| eval time=_time
+| stats list(_raw) as stanzas by time
+| rex field=stanzas mode=sed "s/([\r\n]+)?$/\n\n/"
+| eval stanzas=mvjoin(stanzas, "")
+| rename stanzas as _raw, time as _time
+| table _time, _raw
+| sort _time
+| dedup consecutive=t _raw
+| streamstats count
+| table count, _time, _raw
+| reverse
+| rename count as "Version #"
+| streamstats count as rowidx
+| eval prev_rowidx=rowidx+1</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <fields>["Version #","_time"]</fields>
+        <drilldown>
+          <set token="display_stanza">$row._raw$</set>
+          <set token="display_row">$row.rowidx$</set>
+          <set token="display_row_prev">$row.prev_rowidx$</set>
+        </drilldown>
+      </table>
+      <html>
+        <h2>Difference between current and previous</h2>
+        <pre>$display_diff$</pre>
+      </html>
+    </panel>
+    <panel>
+      <title>Stanza Preview</title>
+      <html>
+        <pre>$display_stanza$</pre>
+      </html>
+    </panel>
+  </row>
+</form>
