@@ -1,4 +1,4 @@
-# Configuration  Monitoring TA
+# Splunk Configuration Change Monitoring - App and TA
 App and Add-on to monitor and parse Splunk configuration files.
 
 ## Installation and configuration
