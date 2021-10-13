@@ -1,0 +1,108 @@
+<form theme="dark">
+  <label>Splunk Configuration Change Statistics</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="searchtime" searchWhenChanged="true">
+      <label>Search Time</label>
+      <default>
+        <earliest>-12h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <viz type="Splunk_TA_common-viz.timeline">
+        <title>Configuration Changes by Time, Splunk-TA or Splunk-App and User</title>
+        <search>
+          <query>index="splunk_confchange" 
+| table _time conf_app conf_user</query>
+          <earliest>$searchtime.earliest$</earliest>
+          <latest>$searchtime.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="Splunk_TA_common-viz.timeline.axisTimeFormat">MINUTES</option>
+        <option name="Splunk_TA_common-viz.timeline.colorMode">categorical</option>
+        <option name="Splunk_TA_common-viz.timeline.maxColor">#dc4e41</option>
+        <option name="Splunk_TA_common-viz.timeline.minColor">#53a051</option>
+        <option name="Splunk_TA_common-viz.timeline.numOfBins">3</option>
+        <option name="Splunk_TA_common-viz.timeline.tooltipTimeFormat">MINUTES</option>
+        <option name="Splunk_TA_common-viz.timeline.useColors">1</option>
+        <option name="drilldown">none</option>
+        <option name="height">400</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </viz>
+    </panel>
+    <panel>
+      <viz type="Splunk_TA_common-viz.timeline">
+        <title>Configuration Changes by Time, Splunk-Server and User</title>
+        <search>
+          <query>index="splunk_confchange" 
+| table _time host conf_user</query>
+          <earliest>$searchtime.earliest$</earliest>
+          <latest>$searchtime.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="Splunk_TA_common-viz.timeline.axisTimeFormat">MINUTES</option>
+        <option name="Splunk_TA_common-viz.timeline.colorMode">categorical</option>
+        <option name="Splunk_TA_common-viz.timeline.maxColor">#dc4e41</option>
+        <option name="Splunk_TA_common-viz.timeline.minColor">#f1813f</option>
+        <option name="Splunk_TA_common-viz.timeline.numOfBins">4</option>
+        <option name="Splunk_TA_common-viz.timeline.tooltipTimeFormat">MINUTES</option>
+        <option name="Splunk_TA_common-viz.timeline.useColors">1</option>
+        <option name="drilldown">none</option>
+        <option name="height">400</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Configuration Changes by Time, Host, App, Context, Config-File and User</title>
+        <search>
+          <query>index="splunk_confchange" 
+| search (conf_file=*.conf OR conf_file=*.xml) conf_context!=metadata conf_stanza!=monitor* conf_stanza!=fschange* 
+| table _time host conf_scope conf_app conf_context conf_file conf_stanza conf_user
+| sort -_time</query>
+          <earliest>$searchtime.earliest$</earliest>
+          <latest>$searchtime.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+      <table>
+        <title>Configuration Changes by Time, Host, App, Context, Config-File and File View</title>
+        <search>
+          <query>index="splunk_confchange" 
+| search (conf_file=*.conf OR conf_file=*.xml) conf_context!=metadata conf_stanza!=monitor* conf_stanza!=fschange* 
+| table _time host conf_scope conf_app conf_context conf_file conf_data
+| sort -_time</query>
+          <earliest>$searchtime.earliest$</earliest>
+          <latest>$searchtime.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

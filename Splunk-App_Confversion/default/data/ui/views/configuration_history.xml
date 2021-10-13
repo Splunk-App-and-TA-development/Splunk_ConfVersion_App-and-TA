@@ -1,4 +1,4 @@
-<form>
+<form theme="dark">
   <label>Configuration Version History</label>
   <init>
     <set token="display_stanza">Please select a version to preview from the panel to the left.</set>

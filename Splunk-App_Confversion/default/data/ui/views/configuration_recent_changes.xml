@@ -1,4 +1,4 @@
-<form>
+<form theme="dark">
   <label>Recent Configuration Changes</label>
   <fieldset submitButton="false">
     <input type="dropdown" token="tok_host_filter" searchWhenChanged="true">
@@ -6,7 +6,7 @@
       <fieldForLabel>host</fieldForLabel>
       <fieldForValue>host</fieldForValue>
       <search>
-        <query>| tstats count where index=_audit by host</query>
+        <query>| tstats count where (index=_audit host=*.logcentral.media.int OR host=zhaar-log01*0) by host</query>
         <earliest>0</earliest>
         <latest></latest>
       </search>
@@ -24,7 +24,7 @@
     <panel>
       <table>
         <search>
-          <query>host="$tok_host_filter$" index=_audit action=add OR action=update OR action=delete path=*.conf path IN(*/etc/apps/*, */etc/system/*, */etc/deployment-apps/*, */etc/master-apps/*, */etc/slave-apps/*, */shcluster/*)
+          <query>host="$tok_host_filter$" index=_audit action=add OR action=update OR action=delete (path=*.conf OR path=*.xml) path IN(*/etc/apps/*, */etc/system/*, */etc/deployment-apps/*, */etc/master-apps/*, */etc/slave-apps/*, */shcluster/*)
 | rex field=path "\/+(?&lt;conf_scope&gt;[^\/]+)\/+(?&lt;conf_app&gt;[^\/]+)\/+(?&lt;conf_context&gt;[^\/]+)\/+(?&lt;conf_file&gt;[^\/]+)$$"
 $tok_filter_nodef$
 | eval _time=coalesce(strptime(modtime, "%a %b %d %H:%M:%S %Y"), _time)
@@ -47,7 +47,7 @@ $tok_filter_nodef$
         </format>
         <fields>["_time","action","conf_scope","conf_app","conf_context","conf_file"]</fields>
         <drilldown>
-          <link target="_blank">/app/ta-confversion/configuration_history?form.host_filter=$tok_host_filter$&amp;form.conf_app_filter=$row.conf_app$&amp;form.conf_context_filter=$row.conf_context$&amp;form.conf_file_filter=$row.conf_file$&amp;form.conf_stanza_filter=*&amp;form.scope_filter=$row.conf_scope$</link>
+          <link target="_blank">/app/STXT-App_Confversion/configuration_history?form.host_filter=$tok_host_filter$&amp;form.conf_app_filter=$row.conf_app$&amp;form.conf_context_filter=$row.conf_context$&amp;form.conf_file_filter=$row.conf_file$&amp;form.conf_stanza_filter=*&amp;form.scope_filter=$row.conf_scope$</link>
         </drilldown>
       </table>
     </panel>

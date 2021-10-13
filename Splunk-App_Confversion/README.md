@@ -1,7 +1,9 @@
 # Configuration  Monitoring App - **Splunk-TA_Confversion**
 App to monitor and parse Splunk configuration files.
 
-The App needs the extractions defined in **Splunk-TA_Confversion** to see the results.
+To run this App, install the specific **Splunk-TA_Confversion** Add-on to monitor and parse Splunk configuration changes on each Splunk Server.
+This App is specific adapted for Splunk Enterprise Servers running in cluster mode. 
+The best way to get the results is to install this app in the same Search Head you installed the DMC Console.
 
 ## Installation and configuration
 
