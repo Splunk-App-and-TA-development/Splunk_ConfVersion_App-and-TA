@@ -28,16 +28,44 @@ The **TA-SRG_Confversion** must be installed on Search Heads, as it comes bundle
 
 The **STXT-App_Confversion** should be installed on your DMC Console of the Splunk Search Head where the DMC Console is installed to see all Changes on all your servers.
 
-### Configuration
+## Configuration of the TA-SRG_Confversion
 
+### Splunk Components
+- This TA can be installed on all Splunk components including Universal Forwarders.
+- This TA should be installed and configured on all components where configuration change tracking is desired.
+- This TA must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
+- This TA must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data.
+
+### Configuration
 > Note: The app in this repo comes pre-configured with files in `local/`. The version on SplunkBase **is not preconfigured**, and requires the following manual steps.  
 You can use local/*.conf files in this repo as templates to cofngiure the app in your environment.
 
-Create an index (local/indexes.conf) if you do not wish to ingest these logs into main. (recommended)
+Create an index called `splunk_confchange` (local/indexes.conf) if you do not wish to ingest these logs into. (recommended).
 
-Create local/macros.conf and override the `conf_files_index` to point at the index you chose in the step above. 
+- **Optional:** Create **local/macros.conf** and override the `conf_files_index` to point at the index you prefer to chose instead of the one in the step above. 
+```conf
+...
+[conf_files_index]
+definition = (index = splunk_confchange)
+...
+```
 
-Create local/inputs.conf to designate the index and enable the inputs. 
+- **Optional:** Create **local/inputs.conf** to designate the index you prefer to chose and enable the inputs.
+```conf
+...
+index = splunk_confchange
+...
+```
+
+#### File change monitor polling interval
+By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes. In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
+```conf
+...
+[fschange:$SPLUNK_HOME/etc]
+#poll every 30 seconds
+pollPeriod = 30
+...
+```
 
 #### File change monitor polling interval
 
