@@ -1,8 +1,5 @@
 # Configuration  Monitoring TA
-
-Add-on to monitor and parse Splunk configuration files.
-
-## Project Status : RC1
+App and Add-on to monitor and parse Splunk configuration files.
 
 ## Installation and configuration
 Underhalf the Git repo you'll find two main folders that you need to upload to `/opt/splunk/etc/apps/`.
@@ -78,25 +75,50 @@ pollPeriod = 30
 
 This change can cause added load on the system. Ensure you are comfortable with that before implementing this change. 
 
+### Optional Changes to get more results
+In fact wihtin this release you are able to see all changes, even also those in dahsboards (`.xml` files).
+If you don't want to see all changes by default, then you need to adapt the **props.conf** and remove the `xml` value on the following extractions:
+
+**From:**
+
+```conf
+...
+EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta|xml)$ in source
+EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata|views|nav)/(?P<conf_file>[^\/]+\.(conf|meta|xml))$ in source
+...
+EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|views|nav)\/(?P<conf_file>[^\/]+\.conf|.xml)\"
+...
+```
+
+**To:**
+
+```conf
+...
+EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta)$ in source
+EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata)/(?P<conf_file>[^\/]+\.(conf|meta))$ in source
+...
+EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default)\/(?P<conf_file>[^\/]+\.conf)\"
+...
+```
+
 ### Security
-
-This TA exposes potentially sensitive information to users. This includes any passwords/tokens/usernames contained within conf files on the instance. 
-
-It is highly recommended that the index this TA uses be made accessible soley to administrators to prevent information disclousre to unauthorised parties. 
+This TA exposes potentially sensitive information to users. This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
+It is highly recommended that the index this TA uses be made **accessible soley to administrators** to prevent information disclousre to unauthorised parties. 
 
 ### Configuration Files Contained Within the Add-on
-- app.conf
-- indexes.conf
-- inputs.conf
-- props.conf
-- transforms.conf
+- `app.conf`
+- `indexes.conf`
+- `inputs.conf`
+- `props.conf`
+- `transforms.conf`
+
 
 ## Development
-
-Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately. 
+Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately.<br>
+- https://github.com/Splunk-App-and-TA-development/Splunk_ConfVersion_App-and-TA/issues 
 
 # Support
+Support will be provided by the developers on a best-effort basis. The developers make no commitment to continued development.<br>
+The software is provided as is, and the developer accepts no responsibility for any issues with the software, or which may result as a consequence of using the software to the fullest extent permissible by the law.
 
-Support will be provided by the developers on a best-effort basis. The developers make no commitment to continued development. The software is provided as is, and the developer accepts no responsibility for any issues with the software, or which may result as a consequence of using the software to the fullest extent permissible by the law.
-
-Please find the license for this software here: https://github.com/d3/d3/blob/master/LICENSE
+Please find the license for this software here: https://github.com/Splunk-App-and-TA-development/Splunk_ConfVersion_App-and-TA/blob/main/LICENSE

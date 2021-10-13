@@ -1,6 +1,6 @@
 # Configuration  Monitoring TA **Splunk-TA_Confversion**
-Add-on to monitor and parse Splunk configuration files. This TA is specific adapted for STXT Splunk Servers.
-The TA is not visible and you need the **Splunk-App_Confversion** to see the results.
+Add-on to monitor and parse Splunk configuration files. This TA is adapted tom use on Splunk Enterprise Servers.
+You need to install the **Splunk-App_Confversion** to see the results.
 
 ## Installation and configuration
 
@@ -32,7 +32,8 @@ index = splunk_confchange
 ```
 
 #### File change monitor polling interval
-By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes. In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
+By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes.<br>
+In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
 ```conf
 ...
 [fschange:$SPLUNK_HOME/etc]
@@ -41,17 +42,46 @@ pollPeriod = 30
 ...
 ```
 
-This change can cause added load on the system. Ensure you are comfortable with that before implementing this change. 
+This change can cause added load on the system on the beguining. Ensure you are comfortable with that before implementing this change. 
+
+### Optional Changes to get more results
+In fact wihtin this release you are able to see all changes, even also those in dahsboards (`.xml` files).
+If you don't want to see all changes by default, then you need to adapt the **props.conf** and remove the `xml` value on the following extractions:
+
+**From:**
+
+```conf
+...
+EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta|xml)$ in source
+EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata|views|nav)/(?P<conf_file>[^\/]+\.(conf|meta|xml))$ in source
+...
+EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|views|nav)\/(?P<conf_file>[^\/]+\.conf|.xml)\"
+...
+```
+
+**To:**
+
+```conf
+...
+EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta)$ in source
+EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata)/(?P<conf_file>[^\/]+\.(conf|meta))$ in source
+...
+EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default)\/(?P<conf_file>[^\/]+\.conf)\"
+...
+```
+
 
 ### Security
-This TA exposes potentially sensitive information to users. This includes any passwords/tokens/usernames contained within conf files on the instance. 
-
-It is highly recommended that the index this TA uses be made accessible soley to administrators to prevent information disclousre to unauthorised parties. 
+This TA exposes potentially sensitive information to users. This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
+It is highly recommended that the index this TA uses be made **accessible soley to administrators** to prevent information disclousre to unauthorised parties. 
 
 ## Development
-Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately. 
+Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately.<br>
+- https://github.com/Splunk-App-and-TA-development/Splunk_ConfVersion_App-and-TA/issues 
+
 
 # Support
-Support will be provided by the developers on a best-effort basis. The developers make no commitment to continued development. The software is provided as is, and the developer accepts no responsibility for any issues with the software, or which may result as a consequence of using the software to the fullest extent permissible by the law.
+Support will be provided by the developers on a best-effort basis. The developers make no commitment to continued development.<br>
+The software is provided as is, and the developer accepts no responsibility for any issues with the software, or which may result as a consequence of using the software to the fullest extent permissible by the law.
 
-Please find the license for this software here: https://github.com/d3/d3/blob/master/LICENSE
+Please find the license for this software here: https://github.com/Splunk-App-and-TA-development/Splunk_ConfVersion_App-and-TA/blob/main/LICENSE
