@@ -1,11 +1,11 @@
-# splunk TA - TA-SRG_Confversion
+# splunk App - Splunk-App_Confversion
 # metadata/default.meta
 # (c) 2021 SwissTXT Security
 ###################################################
 # ----------------------------------------------- #
-# Configuration Monitoring TA for Splunk.         #
+# Configuration Monitoring App for Splunk.        #
 # ----------------------------------------------- #
-# Splunk Add-on to monitor and parse Splunk       #
+# Splunk App to monitor and parse Splunk          #
 # configuration files. It allows administrators   #
 # to quickly identify changes in Splunk's         #
 # configuration.                                  #
@@ -16,42 +16,35 @@
 
 # Application-level permissions
 []
-access = read : [ admin, splunk-system-role ], write : [ admin, splunk-system-role ]
+access = read : [ * ], write : [ admin, power, splunk-system-role ]
 export = system
 
 ### VIEWS
 [views]
-access = read : [ admin, splunk-system-role ], write : [ admin, splunk-system-role ]
 export = system
 
 ### EVENT TYPES
 [eventtypes]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 ### PROPS
 [props]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 ### TRANSFORMS
 [transforms]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 ### LOOKUPS
 [lookups]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 ### MACROS
 [macros]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 ### COMMANDS
 [commands]
-access = read : [ * ], write : [ admin, splunk-system-role ]
 export = system
 
 
