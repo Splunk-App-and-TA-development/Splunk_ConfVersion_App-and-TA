@@ -7,10 +7,10 @@ After the installation of booth folders in `/opt/splunk/etc/apps/` restart the S
 
 1. Create an new index in your environment: `index = splunk_confchange`
 
-2. Upload the App **App-ConfVersion** to `/opt/splunk/etc/apps/`.
+2. Upload the App **App_Splunk-ConfVersion** to `/opt/splunk/etc/apps/`.
 _App with the views of the Configuration Changes on your Splunk Servers._
 
-3. Upload the TA  **TA-ConfVersion** `/opt/splunk/etc/apps/`.
+3. Upload the TA  **TA_Splunk-ConfVersion** `/opt/splunk/etc/apps/`.
 _TA with the extractions and parsings of the Configuration Changes on your Splunk Servers._
 
 4. Restart your Splunk Server: `/opt/splunk/bin/splunk restart`
@@ -18,20 +18,20 @@ _TA with the extractions and parsings of the Configuration Changes on your Splun
 
 ### Requirements and Dependencies
 
-1. The **TA-ConfVersion** can be installed on all Splunk components including Universal Forwarders. 
+1. The **TA_Splunk-ConfVersion** can be installed on all Splunk components including Universal Forwarders. 
 	- We recommended to install/configure the TA on all components where configuration change tracking is desired.
 
-2. The **TA-ConfVersion** must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
+2. The **TA_Splunk-ConfVersion** must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
 
-3. The **TA-ConfVersion** must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
+3. The **TA_Splunk-ConfVersion** must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
 
-4. You need to install and configura the **TA-ConfVersion** berfore to run the **App-ConfVersion**.
+4. You need to install and configura the **TA_Splunk-ConfVersion** berfore to run the **App_Splunk-ConfVersion**.
 
-5. We recommended to install the **App-ConfVersion** on your **[Distributed Monitoring Console](https://docs.splunk.com/Documentation/Splunk/8.2.2/DMC/DMCoverview)** to be able to see all Changes on all your servers.
+5. We recommended to install the **App_Splunk-ConfVersion** on your **[Distributed Monitoring Console](https://docs.splunk.com/Documentation/Splunk/8.2.2/DMC/DMCoverview)** to be able to see all Changes on all your servers.
 	- You can enable the _Monitoring Console_ on one of your Splunk Search Head if you don't have a dedicated _DMC Server_. 
 
 
-## Configuration of the **TA-Confversion**
+## Configuration of the **TA_Splunk-ConfVersion**
 
 ### Configuration Files Contained Within the Add-on
 - `app.conf`
@@ -108,7 +108,7 @@ EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|def
 ...
 ```
 
-## Configuration of the **App-Confversion**
+## Configuration of the **App_Splunk-ConfVersion**
 Depending on the version of some Visualizations you installed before, you may need to adapt some dashboards afterwards.
 
 #### Adapt the **Timeline Visualization** XML on Dashboards

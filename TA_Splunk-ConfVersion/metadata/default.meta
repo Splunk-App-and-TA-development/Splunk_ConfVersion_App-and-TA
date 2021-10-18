@@ -1,11 +1,11 @@
-# splunk App - Splunk-App_Confversion
+# splunk TA - TA_Splunk-ConfVersion
 # metadata/default.meta
-# (c) 2021 SwissTXT Security
+# © 2017-2021 SwissTXT Security
 ###################################################
 # ----------------------------------------------- #
-# Configuration Monitoring App for Splunk.        #
+# Configuration Monitoring TA for Splunk.         #
 # ----------------------------------------------- #
-# Splunk App to monitor and parse Splunk          #
+# Splunk Add-on to monitor and parse Splunk       #
 # configuration files. It allows administrators   #
 # to quickly identify changes in Splunk's         #
 # configuration.                                  #

@@ -1,4 +1,4 @@
-# Configuration  Monitoring TA **Splunk-TA_Confversion**
+# Configuration  Monitoring TA **TA_Splunk-ConfVersion**
 Add-on to monitor and parse Splunk configuration files. This TA is adapted tom use on Splunk Enterprise Servers.
 You need to install the **Splunk-App_Confversion** to see the results.
 
@@ -33,7 +33,8 @@ index = splunk_confchange
 
 #### File change monitor polling interval
 By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes.<br>
-In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
+In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed.<br>
+If this is desired, add the following to `local/inputs.conf`:
 ```conf
 ...
 [fschange:$SPLUNK_HOME/etc]
