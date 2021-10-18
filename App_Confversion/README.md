@@ -71,9 +71,9 @@ You need to adapt the path of the visualization in the dashboard named `configur
 This change can cause added load on the system. Ensure you are comfortable with that before implementing this change. 
 
 ### Security
-<font color=red>**This TA exposes potentially sensitive information to users.**</font><br>
+<span style="color: red">**This TA exposes potentially sensitive information to users.**</span><br>
 This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
-We highly recommended to allow the <font color=red>**access soley to administrators**</font> to index this TA uses to prevent information disclousre to unauthorised parties. 
+We highly recommended to allow the <span style="color: red">**access soley to administrators**</span> to index this TA uses to prevent information disclousre to unauthorised parties. 
 
 ## Development
 Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately.<br>
