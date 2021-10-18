@@ -75,7 +75,7 @@ This change can cause added load on the system. Ensure you are comfortable with 
 - This TA exposes potentially sensitive information to users.
 ```
 
-![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=This TA exposes potentially sensitive information to users.)
+![#f03c15](https://via.placeholder.com/15/f03c15/000000?text="This TA exposes potentially sensitive information to users.")
 
 <span style="color: red">**This TA exposes potentially sensitive information to users.**</span><br>
 This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>

@@ -47,7 +47,7 @@ You can use local/*.conf files in this repo as templates to cofngiure the app in
 Create an index called `splunk_confchange` (local/indexes.conf) if you do not wish to ingest these logs into. (recommended).
 
 - **Optional:** Create **local/macros.conf** and override the `conf_files_index` to point at the index you prefer to chose instead of the one in the step above. 
-```conf
+```xml
 ...
 [conf_files_index]
 definition = (index = splunk_confchange)
@@ -55,7 +55,7 @@ definition = (index = splunk_confchange)
 ```
 
 - **Optional:** Create **local/inputs.conf** to designate the index you prefer to chose and enable the inputs.
-```conf
+```xml
 ...
 index = splunk_confchange
 ...
@@ -63,7 +63,7 @@ index = splunk_confchange
 
 #### File change monitor polling interval
 By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes. In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
-```conf
+```xml
 ...
 [fschange:$SPLUNK_HOME/etc]
 #poll every 30 seconds
@@ -74,7 +74,7 @@ pollPeriod = 30
 #### File change monitor polling interval
 
 By default, Splunk logs changes in the `$SPLUNK_HOME/etc/` directory every 10 minutes. In some cases, it may be desirable to do this more frequently, to ensure that no filechanges are missed. If this is desired, add the following to local/inputs.conf:
-```conf
+```xml
 [fschange:$SPLUNK_HOME/etc]
 #poll every 30 seconds
 pollPeriod = 30
@@ -88,7 +88,7 @@ If you don't want to see all changes by default, then you need to adapt the **pr
 
 **From:**
 
-```conf
+```xml
 ...
 EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta|xml)$ in source
 EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata|views|nav)/(?P<conf_file>[^\/]+\.(conf|meta|xml))$ in source
@@ -99,7 +99,7 @@ EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|def
 
 **To:**
 
-```conf
+```xml
 ...
 EXTRACT-00userconffile = \/etc\/(?<conf_scope>users)\/(?<conf_user>[^\/]+)\/[^\/]+\/[^\/]+\/[^\/]+?\.(conf|meta)$ in source
 EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default|metadata)/(?P<conf_file>[^\/]+\.(conf|meta))$ in source
