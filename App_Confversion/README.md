@@ -42,8 +42,9 @@ Download and install it from Github: https://github.com/Splunk-App-and-TA-develo
 You need to adapt the path of the visualization in the dashboard named `configuration_change_statistics.xml` if you install the timeline viz from splunkbase.com.
 
 **From:**
-...
 ```xml
+....
+...
 <option name="Splunk_TA_common-viz.timeline.axisTimeFormat">MINUTES</option>
 <option name="Splunk_TA_common-viz.timeline.colorMode">categorical</option>
 <option name="Splunk_TA_common-viz.timeline.maxColor">#dc4e41</option>
@@ -51,11 +52,14 @@ You need to adapt the path of the visualization in the dashboard named `configur
 <option name="Splunk_TA_common-viz.timeline.numOfBins">3</option>
 <option name="Splunk_TA_common-viz.timeline.tooltipTimeFormat">MINUTES</option>
 <option name="Splunk_TA_common-viz.timeline.useColors">1</option>
+....
 ...
 ```
 
 **To:**
 ```xml
+....
+...
 <option name="timeline.timeline.axisTimeFormat">MINUTES</option>
 <option name="timeline.timeline.colorMode">categorical</option>
 <option name="timeline.timeline.maxColor">#dc4e41</option>
@@ -63,23 +67,17 @@ You need to adapt the path of the visualization in the dashboard named `configur
 <option name="timeline.timeline.numOfBins">3</option>
 <option name="timeline.timeline.tooltipTimeFormat">MINUTES</option>
 <option name="timeline.timeline.useColors">1</option>
+....
 ...
 ```
 	
 		
-
-This change can cause added load on the system. Ensure you are comfortable with that before implementing this change. 
-
 ### Security
-```diff
-- This TA exposes potentially sensitive information to users.
-```
-
-![#f03c15](https://via.placeholder.com/15/f03c15/000000?text="This TA exposes potentially sensitive information to users.")
-
-<span style="color: red">**This TA exposes potentially sensitive information to users.**</span><br>
+**This TA exposes potentially sensitive information to users.**<br>
 This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
-We highly recommended to allow the <span style="color: red">**access soley to administrators**</span> to index this TA uses to prevent information disclousre to unauthorised parties. 
+We highly recommended to allow the **access soley to administrators** to index this TA uses to prevent information disclousre to unauthorised parties. 
+
+The installation of this Addon can cause added load on the Splunk systems. Ensure you are comfortable with that before implementing this change. 
 
 ## Development
 Please track issues here, on GitLab. Merge requests are welcome, but may not be addressed immediately.<br>
