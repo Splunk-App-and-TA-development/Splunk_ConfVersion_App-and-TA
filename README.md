@@ -31,7 +31,7 @@ _TA with the extractions and parsings of the Configuration Changes on your Splun
 	- You can enable the _Monitoring Console_ on one of your Splunk Search Head if you don't have a dedicated _DMC Server_. 
 
 
-## Configuration of the TA-SRG_Confversion
+## Configuration of the **TA-Confversion**
 
 ### Configuration Files Contained Within the Add-on
 - `app.conf`
@@ -107,6 +107,44 @@ EXTRACT-01conffile = \/(?<conf_scope>[^\/]+)\/(?P<conf_app>[^\/]+)\/(?P<conf_con
 EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|default)\/(?P<conf_file>[^\/]+\.conf)\"
 ...
 ```
+
+## Configuration of the **App-Confversion**
+Depending on the version of some Visualizations you installed before, you may need to adapt some dashboards afterwards.
+
+#### Adapt the **Timeline Visualization** XML on Dashboards
+To run the App, you need to ensure that the **timeline visualization** is installed.
+Download direct from Splunk: https://splunkbase.splunk.com/app/3120/
+
+The best way is to install the **Splunk-TA Common-viz** which contains a big collection of visualizations in one TA.
+Download and install it from Github: https://github.com/Splunk-App-and-TA-development/Splunk_TA_common-viz
+
+You need to adapt the path of the visualization in the dashboard named `configuration_change_statistics.xml` if you install the timeline viz from splunkbase.com.
+
+**From:**
+...
+```xml
+<option name="Splunk_TA_common-viz.timeline.axisTimeFormat">MINUTES</option>
+<option name="Splunk_TA_common-viz.timeline.colorMode">categorical</option>
+<option name="Splunk_TA_common-viz.timeline.maxColor">#dc4e41</option>
+<option name="Splunk_TA_common-viz.timeline.minColor">#53a051</option>
+<option name="Splunk_TA_common-viz.timeline.numOfBins">3</option>
+<option name="Splunk_TA_common-viz.timeline.tooltipTimeFormat">MINUTES</option>
+<option name="Splunk_TA_common-viz.timeline.useColors">1</option>
+...
+```
+
+**To:**
+```xml
+<option name="timeline.timeline.axisTimeFormat">MINUTES</option>
+<option name="timeline.timeline.colorMode">categorical</option>
+<option name="timeline.timeline.maxColor">#dc4e41</option>
+<option name="timeline.timeline.minColor">#53a051</option>
+<option name="timeline.timeline.numOfBins">3</option>
+<option name="timeline.timeline.tooltipTimeFormat">MINUTES</option>
+<option name="timeline.timeline.useColors">1</option>
+...
+```
+
 
 ### Security
 This TA exposes potentially sensitive information to users. This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
