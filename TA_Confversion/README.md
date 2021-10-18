@@ -91,7 +91,7 @@ Please track issues here, on GitLab. Merge requests are welcome, but may not be 
 - Document TA and App installaion
 
 #### v 1.0.0
--Initial Versionsion
+- Initial Versionsion
 
 
 ## **Support**
