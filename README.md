@@ -7,31 +7,38 @@ After the installation of booth folders in `/opt/splunk/etc/apps/` restart the S
 
 1. Create an new index in your environment: `index = splunk_confchange`
 
-2. Upload the App **STXT-App_Confversion** to `/opt/splunk/etc/apps/`.
+2. Upload the App **App-ConfVersion** to `/opt/splunk/etc/apps/`.
 _App with the views of the Configuration Changes on your Splunk Servers._
 
-3. Upload the TA  **TA-SRG_Confversion** `/opt/splunk/etc/apps/`.
+3. Upload the TA  **TA-ConfVersion** `/opt/splunk/etc/apps/`.
 _TA with the extractions and parsings of the Configuration Changes on your Splunk Servers._
 
 4. Restart your Splunk Server: `/opt/splunk/bin/splunk restart`
 
-### Splunk Components
 
-The **TA-SRG_Confversion** can be installed on all Splunk components including Universal Forwarders. This TA should be installed and configured on all components where configuration change tracking is desired.
+### Requirements and Dependencies
 
-The **TA-SRG_Confversion** must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
+1. The **TA-ConfVersion** can be installed on all Splunk components including Universal Forwarders. 
+	- We recommended to install/configure the TA on all components where configuration change tracking is desired.
 
-The **TA-SRG_Confversion** must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
+2. The **TA-ConfVersion** must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
 
-The **STXT-App_Confversion** should be installed on your DMC Console of the Splunk Search Head where the DMC Console is installed to see all Changes on all your servers.
+3. The **TA-ConfVersion** must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data. 
+
+4. You need to install and configura the **TA-ConfVersion** berfore to run the **App-ConfVersion**.
+
+5. We recommended to install the **App-ConfVersion** on your **[Distributed Monitoring Console](https://docs.splunk.com/Documentation/Splunk/8.2.2/DMC/DMCoverview)** to be able to see all Changes on all your servers.
+	- You can enable the _Monitoring Console_ on one of your Splunk Search Head if you don't have a dedicated _DMC Server_. 
+
 
 ## Configuration of the TA-SRG_Confversion
 
-### Splunk Components
-- This TA can be installed on all Splunk components including Universal Forwarders.
-- This TA should be installed and configured on all components where configuration change tracking is desired.
-- This TA must be installed on Indexers and intermediate HFs, as it contains index-time transforms. 
-- This TA must be installed on Search Heads, as it comes bundled with important KOs for viewing the indexed configuration data.
+### Configuration Files Contained Within the Add-on
+- `app.conf`
+- `indexes.conf`
+- `inputs.conf`
+- `props.conf`
+- `transforms.conf`
 
 ### Configuration
 > Note: The app in this repo comes pre-configured with files in `local/`. The version on SplunkBase **is not preconfigured**, and requires the following manual steps.  
@@ -104,13 +111,6 @@ EXTRACT-z1conffile = path=\".+\/(?P<conf_app>[^\/]+)\/(?P<conf_context>local|def
 ### Security
 This TA exposes potentially sensitive information to users. This includes any **passwords/tokens/usernames** contained within conf files on the instance.<br>
 It is highly recommended that the index this TA uses be made **accessible soley to administrators** to prevent information disclousre to unauthorised parties. 
-
-### Configuration Files Contained Within the Add-on
-- `app.conf`
-- `indexes.conf`
-- `inputs.conf`
-- `props.conf`
-- `transforms.conf`
 
 
 ## Development

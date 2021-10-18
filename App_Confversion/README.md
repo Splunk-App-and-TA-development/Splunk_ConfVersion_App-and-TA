@@ -1,7 +1,7 @@
-# Configuration  Monitoring App - **Splunk-TA_Confversion**
+# Configuration  Monitoring App - **App-Confversion**
 App to monitor and parse Splunk configuration files.
 
-To run this App, install the specific **Splunk-TA_Confversion** Add-on to monitor and parse Splunk configuration changes on each Splunk Server.
+To run this App, install the specific **App-Confversion** Add-on to monitor and parse Splunk configuration changes on each Splunk Server.
 This App is specific adapted for Splunk Enterprise Servers running in cluster mode. 
 The best way to get the results is to install this app in the same Search Head you installed the DMC Console.
 
@@ -15,17 +15,28 @@ It comes bundled with important KOs for viewing the indexed configuration data.
 > Note: The app in this repo comes pre-configured with files in `default/`.  
 You can use local/*.conf files in this repo as templates to cofngiure the app in your environment.
 
+### How to use the app
+Just install the App after the installation and configuration or the _TA-Confversion_.
 
-#### How to use the app
-Just install the App and ensure that the `index=splunk_confchange` is created and the macros.conf in the TA are working.
+Ensure that the `index=splunk_confchange` is created and the `macros.conf` in the _TA-Confversion_ are working.
 If you change the index name, then you'll maybe have to change it in some dashboards.
 
 
-#### Dependencies
-To run the App, you need to ensure that the **timeline visualization** is installed.<br>
+### Requirements and Dependencies
+There are some points to concern before you start with the app.
+Remember to follow the instructions explained below.
+
+#### Install **TA_Confversion** before
+to use this App you need first to install the **TA-Confversion**.
+You can download the "all in one" package under: - https://github.com/Splunk-App-and-TA-development/Splunk_ConfVersion_App-and-TA
+
+follow the setup instructions once the _TA-Confversion_ is installed and restart then your Splunk instance.
+
+#### Adapt the **Timeline Visualization** XML on Dashboards
+To run the App, you need to ensure that the **timeline visualization** is installed.
 Download direct from Splunk: https://splunkbase.splunk.com/app/3120/
 
-The best way is to install the **Splunk-TA Common-viz** which contains a big collection of visualizations in one TA.<br>
+The best way is to install the **Splunk-TA Common-viz** which contains a big collection of visualizations in one TA.
 Download and install it from Github: https://github.com/Splunk-App-and-TA-development/Splunk_TA_common-viz
 
 You need to adapt the path of the visualization in the dashboard named `configuration_change_statistics.xml` if you install the timeline viz from splunkbase.com.
